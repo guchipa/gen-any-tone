@@ -351,21 +351,23 @@ export default function Home() {
               <CardDescription>音高順に表示されます</CardDescription>
             </CardHeader>
             <CardContent>
-              {sortedNotes.length === 0 ? (
+              {notes.length === 0 ? (
                 <p className="text-gray-500">構成音が追加されていません</p>
               ) : (
                 <div className="space-y-4">
-                  {sortedNotes.map((note, index) => {
+                  {sortedNotes.map((note) => {
+                    // 元の配列でのインデックスを取得（ユニークキーとして使用）
                     const originalIndex = notes.findIndex(
                       (n) =>
                         n.noteName === note.noteName &&
                         n.octave === note.octave &&
-                        n.cents === note.cents
+                        Math.abs(n.cents - note.cents) < 0.001 &&
+                        n.volume === note.volume
                     );
 
                     return (
                       <div
-                        key={`${note.noteName}${note.octave}-${note.cents}-${index}`}
+                        key={originalIndex}
                         className="border rounded-lg p-4"
                       >
                         <div className="flex items-center justify-between mb-3">
@@ -384,11 +386,11 @@ export default function Home() {
 
                         <div className="space-y-3">
                           <div>
-                            <Label htmlFor={`cents-${index}`}>
+                            <Label htmlFor={`cents-${originalIndex}`}>
                               cent調整: {note.cents.toFixed(1)}
                             </Label>
                             <Input
-                              id={`cents-${index}`}
+                              id={`cents-${originalIndex}`}
                               type="number"
                               min={-100}
                               max={100}
@@ -405,11 +407,11 @@ export default function Home() {
                           </div>
 
                           <div>
-                            <Label htmlFor={`volume-${index}`}>
+                            <Label htmlFor={`volume-${originalIndex}`}>
                               音量: {note.volume}
                             </Label>
                             <Slider
-                              id={`volume-${index}`}
+                              id={`volume-${originalIndex}`}
                               min={0}
                               max={100}
                               step={1}

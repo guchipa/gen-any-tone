@@ -179,12 +179,14 @@ export default function Home() {
     if (cents < -100 || cents > 100) return;
 
     const newNotes = [...notes];
+    const oldNote = notes[index];
     newNotes[index] = { ...newNotes[index], cents };
     setNotes(newNotes);
 
     // 再生中の場合はリアルタイム更新
     if (isPlaying && audioGeneratorRef.current) {
-      audioGeneratorRef.current.updateCents(notes[index], cents, baseFrequency);
+      // 古いnoteのキーで検索して、新しいcent値を適用
+      audioGeneratorRef.current.updateCents(oldNote, cents, baseFrequency);
     }
   };
 
@@ -384,31 +386,51 @@ export default function Home() {
                           </Button>
                         </div>
 
-                        <div className="space-y-3">
-                          <div>
-                            <Label htmlFor={`cents-${originalIndex}`}>
-                              cent調整: {note.cents.toFixed(1)}
+                        <div className="space-y-4">
+                          {/* cent調整セクション */}
+                          <div className="bg-gray-50 dark:bg-blue-950 p-3 rounded-md border border-gray-200 dark:border-gray-800">
+                            <Label
+                              htmlFor={`cents-${originalIndex}`}
+                              className="text-gray-700 dark:text-gray-300 font-semibold"
+                            >
+                              🎵 cent調整: {note.cents.toFixed(1)}
                             </Label>
-                            <Input
-                              id={`cents-${originalIndex}`}
-                              type="number"
-                              min={-100}
-                              max={100}
-                              step={0.1}
-                              value={note.cents}
-                              onChange={(e) =>
-                                updateNoteCents(
-                                  originalIndex,
-                                  Number(e.target.value)
-                                )
-                              }
-                              className="mt-1"
-                            />
+                            <div className="mt-2 space-y-2">
+                              <Slider
+                                id={`cents-slider-${originalIndex}`}
+                                min={-100}
+                                max={100}
+                                step={0.1}
+                                value={[note.cents]}
+                                onValueChange={(value) =>
+                                  updateNoteCents(originalIndex, value[0])
+                                }
+                              />
+                              <Input
+                                id={`cents-${originalIndex}`}
+                                type="number"
+                                min={-100}
+                                max={100}
+                                step={0.1}
+                                value={note.cents}
+                                onChange={(e) =>
+                                  updateNoteCents(
+                                    originalIndex,
+                                    Number(e.target.value)
+                                  )
+                                }
+                                className="max-w-[120px]"
+                              />
+                            </div>
                           </div>
 
-                          <div>
-                            <Label htmlFor={`volume-${originalIndex}`}>
-                              音量: {note.volume}
+                          {/* 音量調整セクション */}
+                          <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded-md border border-gray-200 dark:border-gray-700">
+                            <Label
+                              htmlFor={`volume-${originalIndex}`}
+                              className="text-gray-700 dark:text-gray-300 font-semibold"
+                            >
+                              🔊 音量: {note.volume}
                             </Label>
                             <Slider
                               id={`volume-${originalIndex}`}

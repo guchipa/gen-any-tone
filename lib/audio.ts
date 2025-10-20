@@ -75,10 +75,10 @@ export class AudioGenerator {
   }
 
   /**
-   * 構成音のユニークキーを生成
+   * 構成音のユニークキーを生成（centは含めない）
    */
   private getNoteKey(note: Note): string {
-    return `${note.noteName}${note.octave}-${note.cents}`;
+    return `${note.noteName}${note.octave}`;
   }
 
   /**

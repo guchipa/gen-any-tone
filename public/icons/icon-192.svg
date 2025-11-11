@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <defs>
+    <style>
+      .bg { fill: #3b82f6; }
+      .text { fill: #ffffff; font-family: Arial, sans-serif; font-size: 96px; font-weight: bold; }
+    </style>
+  </defs>
+  <rect width="192" height="192" class="bg" rx="32"/>
+  <text x="96" y="136" class="text" text-anchor="middle">♪</text>
+</svg>
